@@ -44,6 +44,7 @@ public class SecurityConfig {
         configureCsrf(http);
         configureAuthorization(http);
 
+        // Add JWT authentication filter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -54,25 +55,24 @@ public class SecurityConfig {
     }
 
     private CorsConfigurationSource createCorsConfigurationSource() {
-        return request -> {
-            CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-            config.setAllowCredentials(true);
-            config.setAllowedHeaders(Collections.singletonList("*"));
-            config.setExposedHeaders(Collections.singletonList("Authorization"));
-            config.setMaxAge(3600L);
-            return config;
-        };
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(Collections.singletonList("*"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowCredentials(true);
+        config.setAllowedHeaders(Collections.singletonList("*"));
+        config.setExposedHeaders(Collections.singletonList("Authorization"));
+        config.setMaxAge(3600L); // Pre-flight cache duration
+        return request -> config; // Use the configured CorsConfiguration
     }
 
     private void configureCsrf(HttpSecurity http) throws Exception {
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
+
         http.csrf(csrfConfig -> csrfConfig
                 .csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
-                .ignoringRequestMatchers("/api/login")
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-        ).addFilterAfter(new CsrfCookieFilter(), ChannelProcessingFilter.class);
+                .ignoringRequestMatchers("/api/login") // CSRF protection is disabled for login
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // Use cookie-based CSRF protection
+        ).addFilterAfter(new CsrfCookieFilter(), ChannelProcessingFilter.class); // Add custom CSRF cookie filter
     }
 
     private void configureAuthorization(HttpSecurity http) throws Exception {
@@ -89,11 +89,11 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder(); // Password encoder bean
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+        return authenticationConfiguration.getAuthenticationManager(); // Provide the authentication manager
     }
 }

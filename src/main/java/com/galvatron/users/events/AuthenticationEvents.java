@@ -6,19 +6,24 @@ import org.springframework.security.authentication.event.AbstractAuthenticationF
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 @Slf4j
 public class AuthenticationEvents {
 
     @EventListener
     public void onSuccess(AuthenticationSuccessEvent successEvent) {
-        log.info("Login successful for the user : {}", successEvent.getAuthentication().getName());
+        String username = successEvent.getAuthentication().getName();
+        LocalDateTime timestamp = LocalDateTime.now();
+        log.info("LOGIN SUCCESS - User: {}, Timestamp: {}", username, timestamp);
     }
 
     @EventListener
     public void onFailure(AbstractAuthenticationFailureEvent failureEvent) {
-        log.error("Login failed for the user : {} due to : {}", failureEvent.getAuthentication().getName(),
-                failureEvent.getException().getMessage());
+        String username = failureEvent.getAuthentication().getName();
+        String errorMessage = failureEvent.getException().getMessage();
+        LocalDateTime timestamp = LocalDateTime.now();
+        log.error("LOGIN FAILURE - User: {}, Timestamp: {}, Error: {}", username, timestamp, errorMessage);
     }
-
 }

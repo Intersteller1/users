@@ -5,14 +5,17 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.authorization.event.AuthorizationDeniedEvent;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 @Slf4j
 public class AuthorizationEvents {
 
     @EventListener
     public void onFailure(AuthorizationDeniedEvent deniedEvent) {
-        log.error("Authorization failed for the user : {} due to : {}", deniedEvent.getAuthentication().get().getName(),
-                deniedEvent.getAuthorizationDecision().toString());
+        String username = deniedEvent.getAuthentication().get().getName();
+        String authorizationDecision = deniedEvent.getAuthorizationDecision().toString();
+        LocalDateTime timestamp = LocalDateTime.now();
+        log.error("AUTHORIZATION DENIED - User: {}, Timestamp: {}, Decision: {}", username, timestamp, authorizationDecision);
     }
-
 }
