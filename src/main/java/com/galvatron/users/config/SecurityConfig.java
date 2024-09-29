@@ -1,9 +1,7 @@
 package com.galvatron.users.config;
 
-import com.galvatron.users.filters.CorsFilter;
 import com.galvatron.users.filters.CsrfCookieFilter;
 import com.galvatron.users.filters.JwtAuthenticationFilter;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,23 +52,22 @@ public class SecurityConfig {
     }
 
     private CorsConfigurationSource createCorsConfigurationSource() {
-        return request -> {
-            CorsConfiguration config = new CorsConfiguration();
-            config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-            config.setAllowCredentials(true);
-            config.setAllowedHeaders(Collections.singletonList("*"));
-            config.setExposedHeaders(Collections.singletonList("Authorization"));
-            config.setMaxAge(3600L);
-            return config;
-        };
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(Collections.singletonList("*"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowCredentials(true);
+        config.setAllowedHeaders(Collections.singletonList("*"));
+        config.setExposedHeaders(Collections.singletonList("Authorization"));
+        config.setMaxAge(3600L); // Pre-flight cache duration
+        return request -> config; // Use the configured CorsConfiguration
     }
 
     private void configureCsrf(HttpSecurity http) throws Exception {
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
+
         http.csrf(csrfConfig -> csrfConfig
                 .csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
-                .ignoringRequestMatchers("/api/login")
+                .ignoringRequestMatchers("/api/auth/login")
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
         ).addFilterAfter(new CsrfCookieFilter(), ChannelProcessingFilter.class);
     }
@@ -81,7 +78,7 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authEntryPointJwt))
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/login", "/error").permitAll()
+                        .requestMatchers("/api/auth/login", "/error").permitAll()
                         .requestMatchers("/api/user/create", "/api/users")
                         .hasAnyRole("SUPERADMIN", "RESELLER", "SUPERDISTRIBUTOR", "DISTRIBUTOR")
                 );
