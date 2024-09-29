@@ -1,9 +1,7 @@
 package com.galvatron.users.config;
 
-import com.galvatron.users.filters.CorsFilter;
 import com.galvatron.users.filters.CsrfCookieFilter;
 import com.galvatron.users.filters.JwtAuthenticationFilter;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
