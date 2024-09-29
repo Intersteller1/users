@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/users_db
+    username: postgres
+    password: Postgre@123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+#  security:
+#    jwt:
+#      secret: dummy-jwt-secret-key-for-testing-only123456789  # jwt secret key
+#      expiration: 18000000  # 5 hours in milliseconds
+
+logging:
+  level:
+    org:
+      springframework:
+        security: ${SPRING_SECURITY_LOG_LEVEL:DEBUG}
