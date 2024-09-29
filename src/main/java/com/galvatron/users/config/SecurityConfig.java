@@ -42,7 +42,6 @@ public class SecurityConfig {
         configureCsrf(http);
         configureAuthorization(http);
 
-        // Add JWT authentication filter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -68,9 +67,9 @@ public class SecurityConfig {
 
         http.csrf(csrfConfig -> csrfConfig
                 .csrfTokenRequestHandler(csrfTokenRequestAttributeHandler)
-                .ignoringRequestMatchers("/api/login") // CSRF protection is disabled for login
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // Use cookie-based CSRF protection
-        ).addFilterAfter(new CsrfCookieFilter(), ChannelProcessingFilter.class); // Add custom CSRF cookie filter
+                .ignoringRequestMatchers("/api/auth/login")
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        ).addFilterAfter(new CsrfCookieFilter(), ChannelProcessingFilter.class);
     }
 
     private void configureAuthorization(HttpSecurity http) throws Exception {
@@ -79,7 +78,7 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authEntryPointJwt))
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/login", "/error").permitAll()
+                        .requestMatchers("/api/auth/login", "/error").permitAll()
                         .requestMatchers("/api/user/create", "/api/users")
                         .hasAnyRole("SUPERADMIN", "RESELLER", "SUPERDISTRIBUTOR", "DISTRIBUTOR")
                 );
@@ -87,11 +86,11 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder(); // Password encoder bean
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager(); // Provide the authentication manager
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }

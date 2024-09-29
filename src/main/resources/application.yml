@@ -10,6 +10,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  devtools:
+    restart:
+      enabled: true
 #  security:
 #    jwt:
 #      secret: dummy-jwt-secret-key-for-testing-only123456789  # jwt secret key

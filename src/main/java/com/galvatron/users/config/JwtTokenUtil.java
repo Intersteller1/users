@@ -1,4 +1,4 @@
-package com.galvatron.users.config.jwt;
+package com.galvatron.users.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

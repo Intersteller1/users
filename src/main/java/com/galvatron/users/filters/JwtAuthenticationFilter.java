@@ -1,6 +1,6 @@
 package com.galvatron.users.filters;
 
-import com.galvatron.users.config.jwt.JwtTokenUtil;
+import com.galvatron.users.config.JwtTokenUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
