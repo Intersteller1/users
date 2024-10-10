@@ -1,6 +1,5 @@
 package com.galvatron.users.controllers;
 
-import com.galvatron.users.entities.User;
 import com.galvatron.users.services.AuthService;
 import com.galvatron.users.utils.Request.LoginRequest;
 import com.galvatron.users.utils.Response.AuthenticationResponse;

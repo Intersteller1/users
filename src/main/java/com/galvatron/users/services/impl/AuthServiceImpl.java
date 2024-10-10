@@ -1,7 +1,6 @@
 package com.galvatron.users.services.impl;
 
 import com.galvatron.users.config.JwtTokenUtil;
-import com.galvatron.users.entities.Role;
 import com.galvatron.users.entities.SessionToken;
 import com.galvatron.users.exception.AuthenticationException;
 import com.galvatron.users.exception.JwtTokenInvalidException;
@@ -18,12 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Optional;
 
 @Service
 public class AuthServiceImpl implements AuthService {
