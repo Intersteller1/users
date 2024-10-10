@@ -70,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
         sessionToken.setDeviceType(HttpServletRequestUtil.getDeviceType(request));
         sessionToken.setDeviceName(HttpServletRequestUtil.getDeviceName(request));
         sessionToken.setIp(HttpServletRequestUtil.getClientIp(request));
-        sessionToken.setLatitude("28.672");
+        sessionToken.setLatitude("28.6724");
         sessionToken.setLongitude("77.1784704");
 
         return sessionToken;
