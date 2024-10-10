@@ -4,6 +4,7 @@ import com.galvatron.users.entities.User;
 import com.galvatron.users.services.AuthService;
 import com.galvatron.users.utils.Request.LoginRequest;
 import com.galvatron.users.utils.Response.AuthenticationResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +20,8 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        AuthenticationResponse response = authService.login(loginRequest);
+    public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+        AuthenticationResponse response = authService.login(loginRequest, request);
         return ResponseEntity.ok(response);
     }
 }

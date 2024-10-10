@@ -1,6 +1,7 @@
 package com.galvatron.users.services.impl;
 
 import com.galvatron.users.entities.User;
+import com.galvatron.users.helper.CustomUserDetails;
 import com.galvatron.users.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,6 @@ public class UserServiceImpl implements UserDetailsService {
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
                 .collect(Collectors.toList());
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+        return new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), authorities);
     }
 }

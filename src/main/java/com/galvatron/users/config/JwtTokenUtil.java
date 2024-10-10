@@ -1,5 +1,6 @@
 package com.galvatron.users.config;
 
+import com.galvatron.users.helper.CustomUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -20,20 +21,22 @@ public class JwtTokenUtil {
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtil.class);
     private final String SECRET_KEY = "dummy-jwt-secret-key-for-testing-only123456789"; // It should be at least 256 bits
 
+    private final Long EXPIRE_TIME = 30000000L;
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(CustomUserDetails userDetails) {
         return Jwts.builder()
                 .setIssuer("Shashank")
                 .setSubject(userDetails.getUsername())
                 .claim("username", userDetails.getUsername())
+                .claim("userId", userDetails.getUserId())
                 .claim("authorities", userDetails.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .collect(Collectors.joining(",")))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 30000000)) // 30,000,000 milliseconds
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_TIME)) // 30,000,000 milliseconds
                 .signWith(getSigningKey())
                 .compact();
     }
@@ -57,7 +60,7 @@ public class JwtTokenUtil {
         }
     }
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
@@ -70,7 +73,7 @@ public class JwtTokenUtil {
         }
     }
 
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         try {
             Claims claims = extractAllClaims(token);
             return claims != null && claims.getExpiration().before(new Date());
@@ -78,5 +81,8 @@ public class JwtTokenUtil {
             logger.error("Failed to check if JWT token is expired: {}", e.getMessage());
             return true;
         }
+    }
+    public long getExpirationTime() {
+        return EXPIRE_TIME;
     }
 }
